@@ -12,19 +12,24 @@ import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class StandupApp {
-
+  
+  private static Logger logger = LoggerFactory.getLogger(StandupApp.class);
   private static List<String> userIds;
   private static int seconds;
   private static App app;
 
   public static void main(String[] args) throws Exception {
+    logger.info("Starting server...");
     app = new App();
     app.command("/standup", startStandupHandler());
     app.command("/standup-seconds", setTimeHandler());
 
-    var server = new SlackAppServer(app);
+    var server = new SlackAppServer(app, "/slack/events", 8080);
     server.start();
   }
 
